@@ -18,20 +18,21 @@ public class Main {
         } else if (taskChoice == 2){
             System.out.print("""
                     Выберите:
-                    0. Пример, который возвращает false (1,2,3,4,5,6)
+                    0. Пример, который возвращает false (1,2,8,4,5,6)
                     1. Пример, который возвращает true (1,3,5,7,9,11)
                     """);
             int returnChoice = scanner.nextInt();
             int[] exampleArray;
             if (returnChoice == 0){
-                exampleArray = new int[] {1,2,3,4,5,6};
+                exampleArray = new int[] {1,2,8,4,5,6};
             } else {
                 exampleArray = new int[]{1,3,5,7,9,11};
             }
-            System.out.println(stepTask(3, exampleArray));
+            System.out.println(stepTask(exampleArray.length, exampleArray));
         }
     }
     public static void twentyOne(){
+        //Колода 36 карт
         Scanner scanner = new Scanner(System.in);
         Random random = new Random();
         String userChoice;
@@ -40,7 +41,6 @@ public class Main {
         System.out.print("Игра начинается. \nЧтобы тянуть карту, напишите '+': ");
         userChoice = scanner.next();
         while (!userChoice.equals("-")){
-            //Колода 36 карт
             int nextCardIdx = random.nextInt(cardNames.length);
             String nextCard = cardNames[nextCardIdx];
             if (nextCard.equalsIgnoreCase("Валет")){
@@ -50,7 +50,14 @@ public class Main {
             } else if (nextCard.equalsIgnoreCase("Король")) {
                 userValue += 4;
             } else if (nextCard.equalsIgnoreCase("Туз")) {
-                userValue += 1;
+                if (userValue<=10){
+                    System.out.println("Туз! Можете решить, сколько очков хотите добавить.");
+                    System.out.print("1 или 11 (1/2): ");
+                    int choice = scanner.nextInt();
+                    userValue+=choice==1?1:11;
+                } else {
+                    userValue += 1;
+                }
             } else {
                 userValue += Integer.parseInt(nextCard);
             }
@@ -70,22 +77,12 @@ public class Main {
         }
     }
     public static boolean stepTask(int size, int[] arr){
-        boolean result = true;
-        for (int i = 0; i < size; i++) {
-            try{
-                if (!((arr[i+1] - arr[i]) % 2 == 0)) {
-                    result = false;
-                    break;
-                }
-            } catch (IndexOutOfBoundsException e){
-                if(((arr[size-1] - arr[size-2]) % 2) == 0 && result){
-                    return result;
-                } else {
-                    result = false;
-                    return result;
-                }
+        int step = arr[1] - arr[0];
+        for (int i = size-1; i > 0; i--) {
+            if(arr[i]-arr[i-1] != step){
+                return false;
             }
         }
-        return result;
+        return step % 2 == 0;
     }
 }
